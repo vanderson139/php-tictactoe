@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\GameOverException;
+use App\Exceptions\IllegalMoveException;
+use App\Exceptions\NotYourTurnException;
 use App\Match;
 use Illuminate\Support\Facades\Input;
-use App\Exceptions\GameOverException;
 use Symfony\Component\HttpFoundation\Response;
 
 class MatchController extends Controller
@@ -43,6 +45,8 @@ class MatchController extends Controller
      * @param $id
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws NotYourTurnException
+     * @throws IllegalMoveException
      */
     public function move($id)
     {
@@ -52,6 +56,9 @@ class MatchController extends Controller
         $position = Input::get('position');
 
         $this->checkIfHasAWinner($match);
+
+        $this->checkIfIsYourTurn($match, $player);
+        $this->checkIfThePositionIsTaken($match, $position);
 
         $board = $match->board;
 
@@ -93,14 +100,28 @@ class MatchController extends Controller
         return response()->json(Match::all());
     }
 
+    private function checkIfIsYourTurn(Match $match, $player)
+    {
+        if ($match->next != $player) {
+            throw new NotYourTurnException(Response::HTTP_FORBIDDEN);
+        }
+    }
+
     private function getNextPlayer($player)
     {
         return $player == 1 ? 2 : 1;
     }
 
+    private function checkIfThePositionIsTaken(Match $match, $position)
+    {
+        if ($match->board[$position] != 0) {
+            throw new IllegalMoveException(Response::HTTP_FORBIDDEN);
+        }
+    }
+
     private function checkIfHasAWinner(Match $match)
     {
-        if($match->getMatchWinner() > 0) {
+        if ($match->getMatchWinner() > 0) {
             throw new GameOverException(Response::HTTP_FORBIDDEN);
         }
     }

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Match extends Model
 {
     const DEFAULT_MATCH = [
-        'next' => 1,
+        'next'   => 1,
         'winner' => 0,
-        'board' => [
+        'board'  => [
             0, 0, 0,
             0, 0, 0,
             0, 0, 0,
@@ -53,11 +53,11 @@ class Match extends Model
      * @var array
      */
     protected $casts = [
-        'board' => 'array',
-        'next' => 'integer'
+        'board' => 'array'
     ];
 
-    public static function newMatch() {
+    public static function newMatch()
+    {
         self::create(self::DEFAULT_MATCH);
     }
 
@@ -66,23 +66,26 @@ class Match extends Model
         $this->attributes['board'] = is_array($value) ? json_encode($value) : $value;
     }
 
-    public function getMatchName() {
+    public function getMatchName()
+    {
         return 'Match' . $this->attributes['id'];
     }
 
-    public function getMatchWinner() {
-        if($this->theWinnerIs1()) {
+    public function getMatchWinner()
+    {
+        if ($this->theWinnerIs1()) {
             return 1;
         }
 
-        if($this->theWinnerIs2()) {
+        if ($this->theWinnerIs2()) {
             return 2;
         }
 
         return 0;
     }
 
-    private function theWinnerIs1() {
+    private function theWinnerIs1()
+    {
         $player = 1;
 
         return $this->winsInHorizontal($player)
@@ -90,7 +93,8 @@ class Match extends Model
             || $this->winsInDiagonal($player);
     }
 
-    private function theWinnerIs2() {
+    private function theWinnerIs2()
+    {
         $player = 2;
 
         return $this->winsInHorizontal($player)
@@ -98,11 +102,12 @@ class Match extends Model
             || $this->winsInDiagonal($player);
     }
 
-    private function winsInHorizontal($player) {
+    private function winsInHorizontal($player)
+    {
         $result = array_keys($this->board, $player);
 
-        foreach(self::POSSIBLE_WINS_HORIZONTAL as $win) {
-            if(count(array_intersect($result, $win)) == 3) {
+        foreach (self::POSSIBLE_WINS_HORIZONTAL as $win) {
+            if (count(array_intersect($result, $win)) == 3) {
                 return true;
             }
         }
@@ -110,11 +115,12 @@ class Match extends Model
         return false;
     }
 
-    private function winsInVertical($player) {
+    private function winsInVertical($player)
+    {
         $result = array_keys($this->board, $player);
 
-        foreach(self::POSSIBLE_WINS_VERTICAL as $win) {
-            if(count(array_intersect($result, $win)) == 3) {
+        foreach (self::POSSIBLE_WINS_VERTICAL as $win) {
+            if (count(array_intersect($result, $win)) == 3) {
                 return true;
             }
         }
@@ -122,11 +128,12 @@ class Match extends Model
         return false;
     }
 
-    private function winsInDiagonal($player) {
+    private function winsInDiagonal($player)
+    {
         $result = array_keys($this->board, $player);
 
-        foreach(self::POSSIBLE_WINS_DIAGONAL as $win) {
-            if(count(array_intersect($result, $win)) == 3) {
+        foreach (self::POSSIBLE_WINS_DIAGONAL as $win) {
+            if (count(array_intersect($result, $win)) == 3) {
                 return true;
             }
         }
