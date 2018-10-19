@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Match;
 use Illuminate\Support\Facades\Input;
+use App\Exceptions\GameOverException;
+use Symfony\Component\HttpFoundation\Response;
 
 class MatchController extends Controller
 {
@@ -46,11 +48,16 @@ class MatchController extends Controller
     {
         $match = Match::findOrFail($id);
 
+        $player = Input::get('player');
         $position = Input::get('position');
+
+        $this->checkIfHasAWinner($match);
 
         $board = $match->board;
 
-        $board[$position] = 1;
+        $board[$position] = $player;
+
+        $match->next = $this->getNextPlayer($player);
 
         $match->board = $board;
 
@@ -84,5 +91,17 @@ class MatchController extends Controller
         $match->delete();
 
         return response()->json(Match::all());
+    }
+
+    private function getNextPlayer($player)
+    {
+        return $player == 1 ? 2 : 1;
+    }
+
+    private function checkIfHasAWinner(Match $match)
+    {
+        if($match->getMatchWinner() > 0) {
+            throw new GameOverException(Response::HTTP_FORBIDDEN);
+        }
     }
 }
