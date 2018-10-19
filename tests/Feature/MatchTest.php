@@ -91,6 +91,36 @@ class MatchTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function test_if_it_sets_the_next_player_turn()
+    {
+        $response = $this->put('/api/match/1',
+            [
+                'position' => 1,
+                'player' => 1
+            ]
+        );
+
+        $this->assertEquals(2, json_decode($response->getContent(), true)['next']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_if_it_identifies_the_winner()
+    {
+        $response = $this->put('/api/match/4',
+            [
+                'position' => 8,
+                'player' => 1
+            ]
+        );
+
+        $this->assertEquals(1, json_decode($response->getContent(), true)['winner']);
+    }
+
+    /**
      * Creates a fake array of matches
      *
      * @return array
