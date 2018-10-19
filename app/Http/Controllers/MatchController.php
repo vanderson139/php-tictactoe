@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Match;
 use Illuminate\Support\Facades\Input;
 
-class MatchController extends Controller {
+class MatchController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
         return view('index');
     }
 
     /**
      * Returns a list of matches
      *
-     * TODO it's mocked, make this work :)
-     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function matches() {
-        return response()->json($this->fakeMatches());
+    public function matches()
+    {
+        return response()->json(Match::all());
     }
 
     /**
@@ -27,15 +29,17 @@ class MatchController extends Controller {
      * TODO it's mocked, make this work :)
      *
      * @param $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function match($id) {
+    public function match($id)
+    {
         return response()->json([
-            'id' => $id,
-            'name' => 'Match'.$id,
-            'next' => 2,
+            'id'     => $id,
+            'name'   => 'Match' . $id,
+            'next'   => 2,
             'winner' => 0,
-            'board' => [
+            'board'  => [
                 1, 0, 2,
                 0, 1, 2,
                 0, 0, 0,
@@ -49,9 +53,11 @@ class MatchController extends Controller {
      * TODO it's mocked, make this work :)
      *
      * @param $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function move($id) {
+    public function move($id)
+    {
         $board = [
             1, 0, 2,
             0, 1, 2,
@@ -62,37 +68,39 @@ class MatchController extends Controller {
         $board[$position] = 2;
 
         return response()->json([
-            'id' => $id,
-            'name' => 'Match'.$id,
-            'next' => 1,
+            'id'     => $id,
+            'name'   => 'Match' . $id,
+            'next'   => 1,
             'winner' => 0,
-            'board' => $board,
+            'board'  => $board,
         ]);
     }
 
     /**
      * Creates a new match and returns the new list of matches
      *
-     * TODO it's mocked, make this work :)
-     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create() {
-        return response()->json($this->fakeMatches());
+    public function create()
+    {
+        Match::newMatch();
+
+        return response()->json(Match::all());
     }
 
     /**
      * Deletes the match and returns the new list of matches
      *
-     * TODO it's mocked, make this work :)
-     *
      * @param $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete($id) {
-        return response()->json($this->fakeMatches()->filter(function($match) use($id){
-            return $match['id'] != $id;
-        })->values());
+    public function delete($id)
+    {
+        $match = Match::findOrFail($id);
+        $match->delete();
+
+        return response()->json(Match::all());
     }
 
     /**
@@ -100,47 +108,48 @@ class MatchController extends Controller {
      *
      * @return \Illuminate\Support\Collection
      */
-    private function fakeMatches() {
+    private function fakeMatches()
+    {
         return collect([
             [
-                'id' => 1,
-                'name' => 'Match1',
-                'next' => 2,
+                'id'     => 1,
+                'name'   => 'Match1',
+                'next'   => 2,
                 'winner' => 1,
-                'board' => [
+                'board'  => [
                     1, 0, 2,
                     0, 1, 2,
                     0, 2, 1,
                 ],
             ],
             [
-                'id' => 2,
-                'name' => 'Match2',
-                'next' => 1,
+                'id'     => 2,
+                'name'   => 'Match2',
+                'next'   => 1,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     1, 0, 2,
                     0, 1, 2,
                     0, 0, 0,
                 ],
             ],
             [
-                'id' => 3,
-                'name' => 'Match3',
-                'next' => 1,
+                'id'     => 3,
+                'name'   => 'Match3',
+                'next'   => 1,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     1, 0, 2,
                     0, 1, 2,
                     0, 2, 0,
                 ],
             ],
             [
-                'id' => 4,
-                'name' => 'Match4',
-                'next' => 2,
+                'id'     => 4,
+                'name'   => 'Match4',
+                'next'   => 2,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     0, 0, 0,
                     0, 0, 0,
                     0, 0, 0,
