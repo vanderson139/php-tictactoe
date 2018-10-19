@@ -80,6 +80,7 @@
                 }
                 this.$emit('move', {
                     position: position,
+                    player: this.currentPlayer,
                     id: this.match.id
                 })
             },

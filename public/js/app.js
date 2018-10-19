@@ -47497,10 +47497,12 @@ var URL_MATCHES = '/api/match',
     },
     move: function move(_ref2) {
         var id = _ref2.id,
-            position = _ref2.position;
+            position = _ref2.position,
+            player = _ref2.player;
 
         return __WEBPACK_IMPORTED_MODULE_0_axios___default.a.put(URL_MOVE + id, {
-            position: position
+            position: position,
+            player: player
         });
     },
     create: function create() {
@@ -48244,6 +48246,7 @@ var RELOAD_TIME = 3000;
             }
             this.$emit('move', {
                 position: position,
+                player: this.currentPlayer,
                 id: this.match.id
             });
         },
