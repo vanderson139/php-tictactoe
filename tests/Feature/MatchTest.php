@@ -19,7 +19,7 @@ class MatchTest extends TestCase
     {
         parent::setUp();
 
-        foreach($this->fakeMatches() as $match) {
+        foreach ($this->fakeMatches() as $match) {
             Match::create($match);
         }
     }
@@ -42,11 +42,11 @@ class MatchTest extends TestCase
         $response = $this->post('/api/match');
 
         $newMatch = [
-            'id' => 5,
-            'name' => 'Match5',
-            'next' => 1,
+            'id'     => 5,
+            'name'   => 'Match5',
+            'next'   => 1,
             'winner' => 0,
-            'board' => [
+            'board'  => [
                 0, 0, 0,
                 0, 0, 0,
                 0, 0, 0,
@@ -60,6 +60,37 @@ class MatchTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function test_if_it_returns_the_state_of_a_single_match()
+    {
+        $response = $this->get('/api/match/1');
+
+        $this->assertEquals($this->fakeMatches()[0], json_decode($response->getContent(), true));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_if_it_makes_a_move_in_a_match()
+    {
+        $response = $this->put('/api/match/1',
+            [
+                'position' => 1,
+                'player'   => 1
+            ]
+        );
+
+        $board = [
+            0, 1, 0,
+            0, 0, 0,
+            0, 0, 0,
+        ];
+
+        $this->assertEquals($board, json_decode($response->getContent(), true)['board']);
+    }
+
+    /**
      * Creates a fake array of matches
      *
      * @return array
@@ -68,44 +99,44 @@ class MatchTest extends TestCase
     {
         return [
             [
-                'id' => 1,
-                'name' => 'Match1',
-                'next' => 1,
+                'id'     => 1,
+                'name'   => 'Match1',
+                'next'   => 1,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     0, 0, 0,
                     0, 0, 0,
                     0, 0, 0,
                 ],
             ],
             [
-                'id' => 2,
-                'name' => 'Match2',
-                'next' => 1,
+                'id'     => 2,
+                'name'   => 'Match2',
+                'next'   => 1,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     0, 0, 0,
                     0, 0, 0,
                     0, 0, 0,
                 ],
             ],
             [
-                'id' => 3,
-                'name' => 'Match3',
-                'next' => 1,
+                'id'     => 3,
+                'name'   => 'Match3',
+                'next'   => 1,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     0, 0, 0,
                     0, 0, 0,
                     0, 0, 0,
                 ],
             ],
             [
-                'id' => 4,
-                'name' => 'Match4',
-                'next' => 1,
+                'id'     => 4,
+                'name'   => 'Match4',
+                'next'   => 1,
                 'winner' => 0,
-                'board' => [
+                'board'  => [
                     1, 0, 2,
                     0, 1, 2,
                     0, 0, 0,
